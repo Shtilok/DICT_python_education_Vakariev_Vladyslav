@@ -1,1 +1,3 @@
-print("Hello DICT!")
+giprint ("Python education")
+# new string
+print("Hello DICT")
