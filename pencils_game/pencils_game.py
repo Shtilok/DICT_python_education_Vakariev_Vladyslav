@@ -1,6 +1,5 @@
 import random
 
-
 def get_number_of_pencils():
     while True:
         try:
@@ -43,7 +42,6 @@ def main():
     while num_pencils > 0:
         print("|" * num_pencils)
 
-
         num_taken = take_pencils(current_player, num_pencils)
         num_pencils -= num_taken
 
@@ -52,6 +50,9 @@ def main():
 
         # Зміна поточного гравця
         current_player = 'Jack' if current_player == 'John' else 'John'
+
+    winner = 'John' if current_player == 'Jack' else 'Jack'
+    print(f"{winner} won!")
 
 
 if __name__ == "__main__":
