@@ -3,12 +3,8 @@ import random
 
 def generate_question():
     num1 = random.randint(2, 9)
-    num2 = random.randint(2, 9)
-    operator = random.choice(['+', '*', '-'])
-
-    if operator == '-':
-        # Гарантуємо, що результат віднімання не буде від'ємним
-        num1, num2 = max(num1, num2), min(num1, num2)
+    num2 = random.randint(2, num1)  # Змінено діапазон для num2, щоб не було від'ємних відповідей
+    operator = random.choice(['+', '-', '*'])
 
     question = f"{num1} {operator} {num2}"
     answer = eval(question)
@@ -17,19 +13,27 @@ def generate_question():
 
 
 def main():
-    question, answer = generate_question()
-    user_answer = input(question + "\n> ")
+    correct_answers = 0
 
-    try:
-        user_answer = int(user_answer)
-    except ValueError:
-        print("Please enter a valid integer.")
-        return
+    for _ in range(5):
+        question, answer = generate_question()
+        user_answer = input(question + "\n> ")
 
-    if user_answer == answer:
-        print("Right!")
-    else:
-        print("Wrong!")
+        while True:
+            try:
+                user_answer = int(user_answer)
+                break
+            except ValueError:
+                print("Incorrect format.")
+                user_answer = input("> ")
+
+        if user_answer == answer:
+            print("Right!")
+            correct_answers += 1
+        else:
+            print("Wrong!")
+
+    print(f"Your mark is {correct_answers}/5.")
 
 
 if __name__ == "__main__":
