@@ -10,35 +10,44 @@ def generate_question(level):
         answer = eval(question)
     elif level == 2:
         num = random.randint(11, 29)
-        question = f"{num}"
-        answer = num ** 2  # Возводим число в квадрат
+        question = f"What is the square of {num}? "
+        answer = num ** 2
     else:
         return "Invalid level"
 
     return question, answer
 
 
+def increase_difficulty():
+    print("Congratulations! You have passed level 1.")
+    print("Would you like to proceed to level 2? Enter yes or no.")
+    choice = input("> ").lower()
+    if choice in ['yes', 'y']:
+        return True
+    else:
+        return False
+
+
+def save_results(name, level1_correct_answers, level2_correct_answers):
+    total_correct_answers = level1_correct_answers + level2_correct_answers
+    with open("results.txt", "a") as file:
+        file.write(f"{name}: {total_correct_answers}/10 in levels 1 and 2\n")
+    print("The results are saved in 'results.txt'.")
+
+
 def main():
-    correct_answers = 0
+    print("Welcome to the Arithmetic Test!")
 
-    print("Which level do you want? Enter a number:")
-    print("1 - simple operations with numbers 2-9")
-    print("2 - integral squares of 11-29")
+    level1_correct_answers = 0
+    level2_correct_answers = 0
+    level = 1
 
-    while True:
-        try:
-            level = int(input("> "))
-            if level in [1, 2]:
-                break
-            else:
-                print("Invalid level. Enter 1 or 2.")
-        except ValueError:
-            print("Invalid input. Enter a number.")
-
+    # Проходження першого рівня
     for _ in range(5):
         question, answer = generate_question(level)
         user_answer = input(question + "\n> ")
 
+        # Обробка введеної відповіді та перевірка на правильність
         while True:
             try:
                 user_answer = int(user_answer)
@@ -49,19 +58,47 @@ def main():
 
         if user_answer == answer:
             print("Right!")
-            correct_answers += 1
+            level1_correct_answers += 1
         else:
             print("Wrong!")
 
-    print(f"Your mark is {correct_answers}/5. Would you like to save the result? Enter yes or no.")
-    save_result = input("> ").lower()
+    # Вивід результатів проходження першого рівня
+    print(f"Your mark for level 1 is {level1_correct_answers}/5.")
 
-    if save_result in ['yes', 'y', 'YES', 'Yes']:
+    # Підвищення рівня складності
+    if level1_correct_answers >= 3:  # При проходженні 3 і більше завдань
+        if increase_difficulty():
+            level = 2
+
+    # Проходження другого рівня
+    if level == 2:
+        for _ in range(5):
+            question, answer = generate_question(level)
+            user_answer = input(question + "\n> ")
+
+            while True:
+                try:
+                    user_answer = int(user_answer)
+                    break
+                except ValueError:
+                    print("Incorrect format.")
+                    user_answer = input("> ")
+
+            if user_answer == answer:
+                print("Right!")
+                level2_correct_answers += 1
+            else:
+                print("Wrong!")
+
+        # Вивід результатів проходження другого рівня
+        print(f"Your mark for level 2 is {level2_correct_answers}/5.")
+
+    # Запит користувача на збереження результатів
+    print("Would you like to save your results? Enter yes or no.")
+    save_choice = input("> ").lower()
+    if save_choice in ['yes', 'y']:
         name = input("What is your name?\n> ")
-        with open("results.txt", "a") as file:
-            file.write(
-                f"{name}: {correct_answers}/5 in level {level} ({'simple operations with numbers 2-9' if level == 1 else 'integral squares of 11-29'})\n")
-        print("The results are saved in 'results.txt'.")
+        save_results(name, level1_correct_answers, level2_correct_answers)
 
 
 if __name__ == "__main__":
